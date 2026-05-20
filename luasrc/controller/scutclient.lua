@@ -172,20 +172,20 @@ local tar_files = {
 "/etc/rc.local"
 }
 
-fs.mkdirr(tar_dir)
-for _, v in ipairs(tar_files) do
-sys.call("cp " .. v .. " " .. tar_dir)
-end
+	fs.mkdirr(tar_dir)
+	for _, v in ipairs(tar_files) do
+		sys.call(string.format("cp %q %q", v, tar_dir))
+	end
 
-if fs.access(log_file_backup) then
-sys.call("cat " .. log_file_backup .. " >> " .. tar_dir .. "/scutclient.log")
-end
-if fs.access(log_file) then
-sys.call("cat " .. log_file .. " >> " .. tar_dir .. "/scutclient.log")
-end
+	if fs.access(log_file_backup) then
+		sys.call(string.format("cat %q >> %q", log_file_backup, tar_dir .. "/scutclient.log"))
+	end
+	if fs.access(log_file) then
+		sys.call(string.format("cat %q >> %q", log_file, tar_dir .. "/scutclient.log"))
+	end
 
-http.prepare_content("application/octet-stream")
-http.write(sys.exec("tar -C " .. tar_dir .. " -cf - ."))
-sys.call("rm -rf " .. tar_dir)
-http.close()
+	http.prepare_content("application/octet-stream")
+	http.write(sys.exec(string.format("tar -C %q -cf - .", tar_dir)))
+	sys.call(string.format("rm -rf %q", tar_dir))
+	http.close()
 end
