@@ -16,7 +16,7 @@ return (s:gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 local function get_net_state()
-	local hcontent = trim(sys.exec("wget -T 2 -t 1 -O- http://whatismyip.akamai.com 2>/dev/null | head -n1"))
+	local hcontent = trim(sys.exec("wget -T 2 -t 1 -O- https://whatismyip.akamai.com 2>/dev/null | head -n1"))
 
 if hcontent == '' then
 return 'no_internet'
