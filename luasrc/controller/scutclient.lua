@@ -19,10 +19,6 @@ local function get_net_state()
 	local hcontent = trim(sys.exec("wget -T 2 -t 1 -O- https://whatismyip.akamai.com 2>/dev/null | head -n1"))
 
 	if hcontent == '' then
-		hcontent = trim(sys.exec("wget -T 2 -t 1 -O- http://whatismyip.akamai.com 2>/dev/null | head -n1"))
-	end
-
-	if hcontent == '' then
 		return 'no_internet'
 	elseif hcontent:find("(%d+)%.(%d+)%.(%d+)%.(%d+)") then
 		return 'internet'
