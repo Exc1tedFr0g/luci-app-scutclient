@@ -54,36 +54,18 @@ ui.addNotification(null, E('p', action + ' 操作已发送'));
 });
 }
 
-		var netStateCell = E('td', { 'style': 'color: #666;' }, '获取中……');
-
-		request.get(L.url('admin/services/scutclient/netstat'), { query: {} })
-			.then(function(res) {
-				if (!res || !res.ok)
-					return null;
-				return res.json();
-			})
-			.then(function(info) {
-				if (!info || !info.stat) {
-					netStateCell.style.color = 'red';
-					netStateCell.textContent = '网络状态获取错误！';
-					return;
-				}
-
-				if (info.stat === 'internet') {
-					netStateCell.style.color = 'green';
-					netStateCell.textContent = '网络正常';
-				} else if (info.stat === 'no_login') {
-					netStateCell.style.color = '#FFA500';
-					netStateCell.textContent = '校园网未登录';
-				} else {
-					netStateCell.style.color = 'red';
-					netStateCell.textContent = '网络错误！检查网线/IP设置！';
-				}
-			})
-			.catch(function() {
-				netStateCell.style.color = 'red';
-				netStateCell.textContent = '网络状态获取错误！';
-			});
+var stateText = '网络状态获取错误！';
+var stateStyle = 'color: red;';
+if (data.net_state === 'internet') {
+stateText = '网络正常';
+stateStyle = 'color: green;';
+} else if (data.net_state === 'no_login') {
+stateText = '校园网未登录';
+stateStyle = 'color: #FFA500;';
+} else if (data.net_state === 'no_internet') {
+stateText = '网络错误！检查网线/IP设置！';
+stateStyle = 'color: red;';
+}
 
 if (!sameSubnet && wan)
 ui.addNotification(null, E('p', ipaddr + '\n' + gateway + '\n前三位不一致，请看教程三遍！'), 'warning');
@@ -102,7 +84,7 @@ wan ? E('tr', { 'class': 'tr cbi-section-table-row' }, [ E('td', { 'width': '33%
 wan ? E('tr', { 'class': 'tr cbi-section-table-row', 'style': sameSubnet ? '' : 'color: red;' }, [ E('td', { 'width': '33%' }, E('strong', '网关')), E('td', wan.gateway || '-') ]) : null,
 wan ? E('tr', { 'class': 'tr cbi-section-table-row' }, [ E('td', { 'width': '33%' }, E('strong', 'DNS')), E('td', wan.dns || '-') ]) : null,
 wan ? E('tr', { 'class': 'tr cbi-section-table-row' }, [ E('td', { 'width': '33%' }, E('strong', 'MAC')), E('td', wan.mac || '-') ]) : null,
-					wan ? E('tr', { 'class': 'tr cbi-section-table-row' }, [ E('td', { 'width': '33%' }, E('strong', '网络状态')), netStateCell ]) : null
+wan ? E('tr', { 'class': 'tr cbi-section-table-row' }, [ E('td', { 'width': '33%' }, E('strong', '网络状态')), E('td', { 'style': stateStyle }, stateText) ]) : null
 ].filter(function(r) { return !!r; }))
 ])
 ]),

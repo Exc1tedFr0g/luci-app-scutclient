@@ -16,12 +16,12 @@ return (s:gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 local function get_net_state()
-	local hcontent = trim(sys.exec("wget -T 2 -t 1 -O- https://whatismyip.akamai.com 2>/dev/null | head -n1"))
+local hcontent = trim(sys.exec("wget -O- http://whatismyip.akamai.com 2>/dev/null | head -n1"))
 
-	if hcontent == '' then
-		return 'no_internet'
-	elseif hcontent:find("(%d+)%.(%d+)%.(%d+)%.(%d+)") then
-		return 'internet'
+if hcontent == '' then
+return 'no_internet'
+elseif hcontent:find("(%d+)%.(%d+)%.(%d+)%.(%d+)") then
+return 'internet'
 else
 return 'no_login'
 end
@@ -90,7 +90,8 @@ password = uci:get_first("scutclient", "scutclient", "password") or "",
 hostname = uci:get_first("scutclient", "drcom", "hostname") or "",
 version = uci:get_first("scutclient", "drcom", "version") or "",
 hash = uci:get_first("scutclient", "drcom", "hash") or "",
-		server_auth_ip = uci:get_first("scutclient", "drcom", "server_auth_ip") or ""
+server_auth_ip = uci:get_first("scutclient", "drcom", "server_auth_ip") or "",
+net_state = get_net_state()
 }
 
 if stat and #wan_nets > 0 then
